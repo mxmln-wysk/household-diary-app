@@ -1,0 +1,31 @@
+:root{
+    --menuColor: #2C3746;
+    --bgColor: #2c3746;
+    --textColor: #F77067;    
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    color: var(--textColor);
+}
+
+body{
+    background-color: var(--bgColor);
+    color: --textColor;
+}
+
+a{
+    text-decoration: none;
+  
+    h1{
+        font-size: large;
+    }
+}
+
+.rounded-1{
+    border-radius: 10px;
+}
+
+@import 'pages/header.scss';
+@import 'overlay.scss';

@@ -1,0 +1,32 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    background-color: color-mod(var(--bgColor),blackness(20%));
+    box-shadow: 0 0 1rem black;
+    overflow: hidden;
+  
+    a{
+        transition: all 0.8s linear;
+        width: 100%;
+        text-align: center;
+        
+        :hover{
+            border: 2px black solid;
+            border-bottom: 0;
+            border-top: 0;
+            transform: scale(1.2);
+        }
+    }
+    h1{
+        padding: 0.5rem;
+        padding-bottom: 0.3rem;
+        font-size: 2rem;
+        transition: all 0.5s linear;
+        &.active{
+            text-decoration: underline;
+            text-decoration-thickness: 0.5rem;
+           
+        }
+    }
+    
+}
