@@ -59,9 +59,9 @@ app.on('activate', () => {
 //colors
 //listens for get Color event
 //reads Colors from File and sends it to Frontend
-ipcMain.handle('getColors', async () => {
-  const result = await fs.readFileSync('./src/data/colors.json', 'utf8');
-  return result
+ipcMain.handle('getColors', () => {
+  const result = fs.readFileSync('./src/data/colors.json', 'utf8');
+  return result;
 })
 
 //listener for save color event
@@ -72,4 +72,22 @@ ipcMain.on('color', (event, arg) => {
     } catch (err) {
       console.error(err)
     }
+});
+
+
+// Month Data
+// get Month Date
+
+ipcMain.handle('getMonth', () => {
+  const result = fs.readFileSync('./src/data/exampleData.json', 'utf8');
+  return result;
+});
+
+ipcMain.on('setMonthDate', (event, arg) => {
+  try {
+    fs.writeFileSync(`./src/data/${arg.date.slice(0,7)}.json`, JSON.stringify(arg))
+    console.log('saved!');
+  } catch (err) {
+    console.error(err)
+  }
 });
