@@ -2,17 +2,40 @@ import React, { useState, useEffect } from "react";
 import getMonth from '../helpers/getMonth';
 import DataDialog from "./dataDialog";
 import TableRow from "./tableRow";
+import electron from 'electron';
+import formateDate from "../helpers/formatDate";
+import getCategories from "../helpers/getCategories";
+const ipc = electron.ipcRenderer;
 
 const tableHeader = ['Datum', 'Kategorie','Beschreibung', 'Art', 'Summe' ]
 
 const Dashboard = () => {
-    const [monthData, setMonthDate] = useState([])
-    const [month, setMonth] = useState('')
+    const [monthData, setMonthData] = useState([])
+    const [month, setMonth] = useState(formateDate(Date()).slice(0,7))
+    const [categories, setCategories] = useState([])
+
     useEffect(() => {
-        getMonth().then((month) => setMonthDate(month.data))
-    }, [month])
-    console.log(monthData);
+        getCategories().then((categories)=>{
+            if (!categories.categories) return;
+            setCategories(categories.categories)
+        })
+    }, [])
+
+    useEffect(() => {
+        getMonth(month).then((month) => {
+            if (!month.data) return;
+            setMonthData(month.data)
+        })
+    }, [month])    
     
+    const saveNewEntry = (entry:any[]) => {
+        const dataArr = [...monthData, entry]
+        setMonthData(dataArr);
+        const saveObject = {'data' : dataArr}; 
+        ipc.send('saveMonthData', saveObject);
+
+    }
+
     return(
         <div>
             Dashboard
@@ -29,12 +52,12 @@ const Dashboard = () => {
                 <tbody>
                     {monthData.map((data) => {
                         return (
-                            <TableRow key={data.id} row={data} />
+                            <TableRow key={data.timestamp} row={data} />
                         )
                     })}
                 </tbody>
             </table>
-            <DataDialog />
+            <DataDialog categories={categories} saveData={saveNewEntry}/>
         </div>
     )
 }

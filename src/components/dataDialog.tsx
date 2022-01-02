@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import formateDate from "../helpers/formatDate";
 import electron from 'electron'
+import formatDate from "../helpers/formatDate";
 const ipc = electron.ipcRenderer
 
-const DataDialog = () => {
+const DataDialog = (props: any) => {
     const Datum = new Date().toDateString()
-    
-    console.log(Datum);
-    
     const [date, setDate] = useState(formateDate(Datum));
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
@@ -19,22 +17,16 @@ const DataDialog = () => {
            return
        }
        const dateObject = {
-        "date": date,
+        "date": formatDate(date),
+        "timestamp": Date.now(),
         "category": category,
         "description": description,
         "type": type,
         "sum": sum,
        }
-       ipc.send('setMonthDate', dateObject)
-
-       console.log(dateObject);
-       
+       props.saveData(dateObject);
     }
 
-    console.log(date);
-    
-    
-    
     return(
         <div id="dialog">
             <div>
@@ -43,14 +35,29 @@ const DataDialog = () => {
             </div>
             <div>
                 <label htmlFor='category'>Kategorie</label>
-                <input id="category" name="category" type="text" value={category} onChange={(e)=> setCategory(e.target.value)} />
-            </div>                <div>
+                <select id="category" name="category" value={category} onChange={(e)=> setCategory(e.target.value)}>
+                    <option value=''>Select Category </option>
+                    {props.categories.map((category:string)=>{
+                        return(
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        )
+                    })}
+                </select>
+            </div>                
+            <div>
                 <label htmlFor='description'>Beschreibung</label>
                 <input id="description" name="description" type="text" value={description} onChange={(e)=> setDescription(e.target.value)} />
             </div>
             <div>
                 <label htmlFor='type'>Art</label>
-                <input id="type" name="type" type="text" value={type} onChange={(e)=> setType(e.target.value)} />
+                <select id="type" name="type" value={type} onChange={(e)=> setType(e.target.value)}>
+                    <option value=''>Select Art</option>
+                    <option value='Einnahme'>Einnahme</option>
+                    <option value='Ausgabe'>Ausgabe</option>
+                </select>
+
             </div>
             <div>
                 <label htmlFor='type'>Summe</label>

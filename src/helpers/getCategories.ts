@@ -1,13 +1,12 @@
 import electron from 'electron'
 const ipc = electron.ipcRenderer;
 
-const getMonth = async (date:string) => {
-    console.log('getMonth')
-    return ipc.invoke('getMonth',date)
+const getCategories = async () => {
+    return ipc.invoke('getCategory')
     .then((response) =>{        
         return JSON.parse(response);
     });
 
 }
 
-export default getMonth;
+export default getCategories;

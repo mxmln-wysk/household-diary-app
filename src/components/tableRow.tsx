@@ -5,7 +5,7 @@ const TableRow = (props:any) => {
     return(
        <tr key={row.id}>
            <td>
-               {row.date}
+               {row.date.slice(2)}
            </td>
            <td>
                {row.category}

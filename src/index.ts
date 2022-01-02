@@ -60,7 +60,7 @@ app.on('activate', () => {
 //listens for get Color event
 //reads Colors from File and sends it to Frontend
 ipcMain.handle('getColors', () => {
-  const result = fs.readFileSync('./src/data/colors.json', 'utf8');
+  const result = fs.readFileSync('./src/preferences/colors.json', 'utf8');
   return result;
 })
 
@@ -68,26 +68,61 @@ ipcMain.handle('getColors', () => {
 // saves color to file
 ipcMain.on('color', (event, arg) => {
     try {
-      fs.writeFileSync('./src/data/colors.json', JSON.stringify(arg))
+      fs.writeFileSync('./src/preferences/colors.json', JSON.stringify(arg))
+    } catch (err) {
+      console.error(err)
+    }
+});
+
+//listens for get Category event
+//reads Category from File and sends it to Frontend
+ipcMain.handle('getCategory', () => {
+  const result = fs.readFileSync('./src/preferences/categories.json', 'utf8');
+  return result;
+})
+
+// saves Category to file
+ipcMain.on('setCategory', (event, arg) => {
+    try {
+      fs.writeFileSync('./src/preferences/categories.json', JSON.stringify(arg))
     } catch (err) {
       console.error(err)
     }
 });
 
 
+
+
+
 // Month Data
 // get Month Date
 
-ipcMain.handle('getMonth', () => {
-  const result = fs.readFileSync('./src/data/exampleData.json', 'utf8');
-  return result;
+  ipcMain.handle('getMonth', (event, arg) => {
+    if(fs.existsSync(`./src/data/${arg}.json`)){
+      const result = fs.readFileSync(`./src/data/${arg}.json`, 'utf8');
+      return result;
+    } else {
+
+      fs.writeFile(`./src/data/${arg}.json`,'', (err) => {
+        if (err) throw err;
+      });
+      return null;
+    }
 });
 
 ipcMain.on('setMonthDate', (event, arg) => {
   try {
     fs.writeFileSync(`./src/data/${arg.date.slice(0,7)}.json`, JSON.stringify(arg))
-    console.log('saved!');
   } catch (err) {
     console.error(err)
   }
 });
+
+ipcMain.on('saveMonthData', (event, arg) => {
+  try {
+    fs.writeFileSync(`./src/data/${arg.data[0].date.slice(0,7)}.json`, JSON.stringify(arg));
+  } catch (err) {
+    console.error(err)
+  }
+});
+
